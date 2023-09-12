@@ -12,22 +12,26 @@ class AuthProcessor {
 
   //validate Метод для перевірки аутентифікації. Приймає ім'я користувача (username) і пароль (passkey).
   validate(username, passkey) {
-
-  // Перевіряє, чи є наступний обробник в ланцюгу.
-  if (this.nextProcessor) {
-    return this.nextProcessor.validate(username, passkey)
-  } else {
-    return false;
+    // Перевіряє, чи є наступний обробник в ланцюгу.
+    if (this.nextProcessor) {
+      return this.nextProcessor.validate(username, passkey);
+    } else {
+      return false;
+    }
+    // Якщо так, передає запит на перевірку аутентифікації наступному обробнику,this.nextProcessor.validate(username, passkey), та повертаємо результат.
+    // Якщо наступного обробника немає, повертає false, сигналізуючи про невдалу аутентифікацію.
   }
-  // Якщо так, передає запит на перевірку аутентифікації наступному обробнику,this.nextProcessor.validate(username, passkey), та повертаємо результат.
-  // Якщо наступного обробника немає, повертає false, сигналізуючи про невдалу аутентифікацію.
 }
 
 // TwoStepProcessor Клас обробника, який перевіряє двофакторний код. Наслідує базовий клас AuthProcessor.
 class TwoStepProcessor extends AuthProcessor {
   // Метод для перевірки аутентифікації validate. Перевіряє ім'я користувача (username), пароль (passkey) і викликаємо метод isValidTwoStepCode().
   validate(username, passkey) {
-    if (username === "john" && passkey === "password" && this.isValidTwoStepCode()) {
+    if (
+      username === "john" &&
+      passkey === "password" &&
+      this.isValidTwoStepCode()
+    ) {
       console.log("Вхід дозволено з двофакторною аутентифікацією");
       return true;
     } else {
@@ -37,7 +41,6 @@ class TwoStepProcessor extends AuthProcessor {
   // Якщо username дорівнює "john", passkey дорівнює "password" та метод isValidTwoStepCode() повертає true, аутентифікація успішна.
   // Виводить повідомлення про успішну аутентифікацію: Вхід дозволено з двофакторною аутентифікацією, і повертає true.
   // Якщо дані не вірні, запит на аутентифікацію передається наступному обробнику в ланцюгу, super.validate(username, passkey).
-
 
   // isValidTwoStepCode Метод для перевірки двофакторного коду,який повертає true.
   isValidTwoStepCode() {
@@ -52,15 +55,14 @@ class RoleProcessor extends AuthProcessor {
   validate(username, passkey) {
     if (username === "guest") {
       console.log("Вхід дозволено з роллю гостя");
-          return true;
-        } else {
-          return super.validate(username, passkey);
+      return true;
+    } else {
+      return super.validate(username, passkey);
     }
   }
   // Виводить повідомлення про успішну аутентифікацію Вхід дозволено з роллю гостя, і повертає true.
   // Якщо роль не відповідає, запит на аутентифікацію передається наступному обробнику в ланцюгу.
 }
-
 
 // CredentialsProcessor Клас обробника, який перевіряє облікові дані користувача. Наслідує базовий клас AuthProcessor.
 class CredentialsProcessor extends AuthProcessor {
@@ -71,9 +73,9 @@ class CredentialsProcessor extends AuthProcessor {
   validate(username, passkey) {
     if (username === "admin" && passkey === "admin123") {
       console.log("Вхід дозволено за обліковими даними");
-          return true;
-        } else {
-          return super.validate(username, passkey);
+      return true;
+    } else {
+      return super.validate(username, passkey);
     }
   }
 }
@@ -95,11 +97,11 @@ class ProcessorBuilder {
       this.firstProcessor = processor;
       this.lastProcessor = processor;
     } else {
-  // Якщо це не перший обробник, він додається в кінець ланцюга, і стає останнім.
+      // Якщо це не перший обробник, він додається в кінець ланцюга, і стає останнім.
       this.lastProcessor.setNextProcessor(processor);
       this.lastProcessor = processor;
     }
-  // Повертає this.
+    // Повертає this.
     return this;
   }
 
